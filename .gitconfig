@@ -1,0 +1,15 @@
+[user]
+	name = Rodolfo Neto
+	email = rodolfoneto
+[core]
+	excludesfile = /Users/rodolfoneto/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[commit]
+	template = /Users/rodolfoneto/.stCommitMsg
+[credential]
+	helper = "!f() { /var/www/.vscode-server/bin/ee2b180d582a7f601fa6ecfdad8d9fd269ab1884/node /tmp/vscode-remote-containers-9575492a-f9eb-4d0e-a53d-d3caf78b57d7.js git-credential-helper $*; }; f"

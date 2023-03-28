@@ -58,7 +58,7 @@ class CategoryController extends Controller
         $inputDto = new CategoryCreateInputDto(
             name: $request->name,
             description: $request->description ?? '',
-            is_active: (bool) $request->is_active ?? true,
+            is_active: (bool) $request->is_active ?? false,
         );
 
         $response = $useCase->execute(input: $inputDto);
@@ -80,12 +80,14 @@ class CategoryController extends Controller
         $inputDto = new CategoryUpdateInputDto(
             id: $id,
             name: $request->name,
+            description: $request->description ?? '',
+            is_active: (bool) $request->is_active,
         );
         $outputDto = $useCase->execute($inputDto);
         return (new CategoryResource($outputDto))->response();
     }
 
-    public function delete($id, DeleteCategoryUseCase $useCase)
+    public function destroy($id, DeleteCategoryUseCase $useCase)
     {
         $input = new CategoryDeleteInputDto(
             id: $id,

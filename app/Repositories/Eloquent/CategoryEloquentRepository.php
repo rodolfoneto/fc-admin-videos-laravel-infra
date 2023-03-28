@@ -51,7 +51,7 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
     public function delete(string $uuid): bool
     {
         if (!$modelCategory = $this->model->find($uuid)) {
-            throw new NotFoundException();
+            throw new NotFoundException('Entity not founded');
         }
         return $modelCategory->delete();
     }

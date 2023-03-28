@@ -100,7 +100,7 @@ class CategoryControllerTest extends TestCase
     {
         $category = CategoryModel::factory()->create();
         $useCase = new DeleteCategoryUseCase($this->repository);
-        $response = $this->controller->delete(
+        $response = $this->controller->destroy(
             id: $category->id,
             useCase: $useCase,
         );

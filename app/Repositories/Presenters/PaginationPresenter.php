@@ -3,6 +3,7 @@
 namespace App\Repositories\Presenters;
 
 use Core\Domain\Repository\PaginationInterface;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use stdClass;
 
@@ -13,7 +14,9 @@ class PaginationPresenter implements PaginationInterface
     public function __construct(
         protected LengthAwarePaginator $paginator,
     ) {
-        $this->items = $this->resolveItems($this->paginator->items());
+        $this->items = $this->resolveItems(
+            $this->paginator->items()
+        );
     }
 
     public function items(): array

@@ -30,14 +30,16 @@ class CategoryController extends Controller
 
     public function index(Request $request, ListCategoriesUseCase $useCase)
     {
-        $inputDto = new CategoriesListInputDto(
-            filter: $request->get('filter', ''),
-            order: $request->get('order', 'DESC'),
-            page: (int) $request->get('page', 1),
-            totalPerPage: (int) $request->get('total_per_page', 15),
+        $response = $useCase->execute(
+            input: new CategoriesListInputDto(
+                filter: $request->get('filter', ''),
+                order: $request->get('order', 'DESC'),
+                page: (int) $request->get('page', 1),
+                totalPerPage: (int) $request->get('total_per_page', 15),
+            )
         );
-        $response = $useCase->execute($inputDto);
-        return CategoryResource::collection(collect($response))
+
+        return CategoryResource::collection(collect($response->items))
                                 ->additional([
                                     'meta' => [
                                         'total' => $response->total,
@@ -60,7 +62,7 @@ class CategoryController extends Controller
 
         $response = $useCase->execute(input: $inputDto);
 
-        return (new CategoryResource(collect($response)))
+        return (new CategoryResource($response))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
@@ -69,7 +71,7 @@ class CategoryController extends Controller
     {
         $input = new CategoryInputDto($id);
         $result = $useCase->execute($input);
-        return (new CategoryResource(collect($result)))->response();
+        return (new CategoryResource($result))->response();
     }
 
     public function update(UpdateCategoryRequest $request, $id, UpdateCategoryUseCase $useCase)
@@ -79,7 +81,7 @@ class CategoryController extends Controller
             name: $request->name,
         );
         $outputDto = $useCase->execute($inputDto);
-        return (new CategoryResource(collect($outputDto)))->response();
+        return (new CategoryResource($outputDto))->response();
     }
 
     public function delete($id, DeleteCategoryUseCase $useCase)

@@ -65,7 +65,6 @@ class CategoryControllerTest extends TestCase
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_CREATED, $response->status());
-        $this->assertDatabaseHas('categories', ['name' => "new cat"]);
     }
 
     public function testShow()

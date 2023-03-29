@@ -20,7 +20,7 @@ class CategoryUnitTest extends TestCase
             isActive: true,
             createdAt: (new DateTime())->format('Y-m-d H:i:s'),
         );
-        
+
         $this->assertNotEmpty($category->createdAt());
         $this->assertEquals("New Cat", $category->name);
         $this->assertEquals("New Cat", $category->name);

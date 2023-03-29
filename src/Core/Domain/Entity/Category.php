@@ -9,7 +9,7 @@ use DateTime;
 
 class Category
 {
-    
+
     use MethodsMagicTrait;
 
     public function __construct(
@@ -36,10 +36,12 @@ class Category
         $this->isActive = false;
     }
 
-    public function update(string $name, string $description = null): void
+    public function update(string $name, string $description = null, bool $isActive = true): void
     {
         $this->name = $name;
         $this->description = $description ?? $this->description;
+        $this->isActive = $isActive;
+
         $this->validate();
     }
 

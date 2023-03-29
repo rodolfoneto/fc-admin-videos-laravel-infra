@@ -87,15 +87,16 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
         return new PaginationPresenter($paginator);
     }
 
-    private function toCategory(ModelCategory $input): Category
+    private function toCategory(object $input): Category
     {
-        return new Category(
+        $entity = new Category(
             id: $input->id,
             name: $input->name,
             description: $input->description,
-            isActive: $input->is_active,
             createdAt: $input->create_at ?? '',
             updatedAt: $input->updated_at ?? '',
         );
+        ((bool) $input->is_active) ? $entity->activate() : $entity->deactivate();
+        return $entity;
     }
 }

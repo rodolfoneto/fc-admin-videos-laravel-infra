@@ -21,7 +21,7 @@ class UpdateCategoryUseCaseUnitTest extends TestCase
         $uuid = Uuid::uuid4()->toString();
         $entiryName = "name";
         $entityDescription = "description";
-        
+
         $entityMock = Mockery::mock(EntityCategory::class, [
             $uuid,
             $entiryName,
@@ -50,6 +50,60 @@ class UpdateCategoryUseCaseUnitTest extends TestCase
 
         $this->assertInstanceOf(CategoryUpdateOutputDto::class, $outputDto);
         $this->assertEquals("new name", $outputDto->name);
+
+        /**
+         * Spies
+         */
+        $mockRepoSpy = Mockery::spy(stdClass::class, CategoryRepositoryInterface::class);
+        $mockRepoSpy->shouldReceive('findById')->andReturn($entityMock);
+        $mockRepoSpy->shouldReceive('update')->andReturn($entityUpdatedMock);
+        $useCaseSpy = new UpdateCategoryUseCase($mockRepoSpy);
+        $useCaseSpy->execute($inputDto);
+        $mockRepoSpy->shouldHaveReceived('findById');
+        $mockRepoSpy->shouldHaveReceived('update');
+    }
+
+    public function testDeactiveCategory()
+    {
+        $uuid = Uuid::uuid4()->toString();
+        $entiryName = "name";
+        $entityDescription = "description";
+        $entityIsActive = false;
+
+        $entityMock = Mockery::mock(EntityCategory::class, [
+            $uuid,
+            $entiryName,
+            $entityDescription,
+            true,
+        ]);
+        $entityMock->shouldReceive('update');
+        $entityMock->shouldReceive('createdAt')->andReturn((new DateTime())->format('Y-m-d H:i:s'));
+
+        $entityUpdatedMock = Mockery::mock(EntityCategory::class, [
+            $uuid,
+            "new name",
+            '',
+            $entityIsActive
+        ]);
+        $entityUpdatedMock->shouldReceive('createdAt')->andReturn((new DateTime())->format('Y-m-d H:i:s'));
+
+        $mockRepo = Mockery::mock(stdClass::class, CategoryRepositoryInterface::class);
+        $mockRepo->shouldReceive('findById')->andReturn($entityMock);
+        $mockRepo->shouldReceive('update')->andReturn($entityUpdatedMock);
+
+        $inputDto = Mockery::mock(CategoryUpdateInputDto::class, [
+            $uuid,
+            "new name",
+            null,
+            $entityIsActive,
+        ]);
+
+        $useCase = new UpdateCategoryUseCase($mockRepo);
+        $outputDto = $useCase->execute($inputDto);
+
+        $this->assertInstanceOf(CategoryUpdateOutputDto::class, $outputDto);
+        $this->assertEquals("new name", $outputDto->name);
+        $this->assertFalse($outputDto->is_active);
 
         /**
          * Spies

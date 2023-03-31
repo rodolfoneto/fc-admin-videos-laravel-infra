@@ -76,6 +76,14 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
             ->toArray();
     }
 
+    public function getIdsListIds(array $categoriesId = []): array
+    {
+        return $this->model
+            ->whereIn('id', $categoriesId)
+            ->pluck('id')
+            ->toArray();
+    }
+
     public function paginate(string $filter = '', $order = 'DESC', $page = '1', $totalPerPage = 15): PaginationInterface
     {
         $query = $this->model;

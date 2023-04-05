@@ -1,16 +1,16 @@
 <?php
 
-namespace Tests\Feature\App\Repositories\Eloquent;
+namespace Tests\Feature\App\Repositories;
 
 use App\Models\Category as Model;
-use Core\Domain\Entity\Category as EntityCategory;
 use App\Repositories\Eloquent\CategoryEloquentRepository;
+use Core\Domain\Entity\Category as EntityCategory;
 use Core\Domain\Exception\EntityValidationException;
-use Core\Domain\Repository\CategoryRepositoryInterface;
-use Tests\TestCase;
 use Core\Domain\Exception\NotFoundException;
+use Core\Domain\Repository\CategoryRepositoryInterface;
 use Core\Domain\Repository\PaginationInterface;
 use Illuminate\Support\Str;
+use Tests\TestCase;
 
 class CategoryEloquentRepositoryTest extends TestCase
 {

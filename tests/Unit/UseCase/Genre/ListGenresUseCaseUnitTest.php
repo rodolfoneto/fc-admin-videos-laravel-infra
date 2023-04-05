@@ -47,6 +47,14 @@ class ListGenresUseCaseUnitTest extends BaseGenreTestUnit
         $this->assertEquals(15, $output->per_page);
         $this->assertEquals(3, $output->total);
         $this->assertEquals(1, $output->current_page);
+
+        /**
+         * Spies
+         */
+        $spy = Mockery::spy(stdClass::class, GenreRepositoryInterface::class);
+        $spy->shouldReceive('paginate')->once()->withArgs(['', 'DESC', 1, 15])->andReturn($pagination);
+        $useCaseSpy = new ListGenresUseCase($spy);
+        $useCaseSpy->execute($inputDto);
     }
 
     private function mockPagination(array $items = [])

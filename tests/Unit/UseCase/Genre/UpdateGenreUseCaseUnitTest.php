@@ -59,8 +59,8 @@ class UpdateGenreUseCaseUnitTest extends BaseGenreTestUnit
 
     protected function prepareRepository($uuid)
     {
-        $this->repository->shouldReceive('findById')->andReturn($this->mockEntity($uuid));
-        $this->repository->shouldReceive('update')->andReturn();
+        $this->repository->shouldReceive('findById')->once()->andReturn($this->mockEntity($uuid));
+        $this->repository->shouldReceive('update')->once()->andReturn();
     }
 
     protected function mockEntity(string $uuid)
@@ -71,7 +71,7 @@ class UpdateGenreUseCaseUnitTest extends BaseGenreTestUnit
         ]);
         $entity->shouldReceive('id')->andReturn($id);
         $entity->shouldReceive('createdAt')->andReturn(date('Y-m-d H:i:s'));
-        $entity->shouldReceive('update');
+        $entity->shouldReceive('update')->once();
         $entity->shouldReceive('addCategory');
         return $entity;
     }

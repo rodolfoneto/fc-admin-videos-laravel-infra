@@ -14,11 +14,11 @@ class Genre
     use MethodsMagicTrait;
 
     public function __construct(
-        public string $name,
-        public ?Uuid $id = null,
-        public bool $isActive = true,
+        protected string $name,
+        protected ?Uuid $id = null,
+        protected bool $isActive = true,
         protected array $categoriesId = [],
-        public ?DateTime $createdAt = null,
+        protected ?DateTime $createdAt = null,
     ) {
         $this->id = $this->id ? $this->id : Uuid::random();
         $this->createdAt = $this->createdAt ? $this->createdAt : new DateTime();

@@ -16,15 +16,15 @@ abstract class ModelTestCase extends TestCase
     public function testIfUseTraits()
     {
         $traitsNeed= $this->traits();
-        $category = $this->model();
-        $traitsUsed = array_keys(class_uses($category));
+        $model = $this->model();
+        $traitsUsed = array_keys(class_uses($model));
         $this->assertEquals($traitsNeed, $traitsUsed);
     }
 
     public function testIncrementingIsFalse(): void
     {
-        $category = $this->model();
-        $this->assertEquals($this->incrementing(), $category->incrementing);
+        $model = $this->model();
+        $this->assertEquals($this->incrementing(), $model->incrementing);
     }
 
     public function testHasFillables(): void

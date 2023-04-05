@@ -17,10 +17,12 @@ class GenreEloquentRepository implements GenreRepositoryInterface
 {
 
     protected GenreModel $model;
+    protected TransactionInterface $transaction;
 
     public function __construct(GenreModel $model, TransactionInterface $transaction)
     {
         $this->model = $model;
+        $this->transaction = $transaction;
     }
 
     public function insert(Genre $genre): Genre
@@ -52,6 +54,10 @@ class GenreEloquentRepository implements GenreRepositoryInterface
         $modelGenre->update([
             'name' => $genre->name,
         ]);
+
+        if(count($genre->categoriesId) > 0) {
+            $modelGenre->categories()->sync($genre->categoriesId);
+        }
 
         $modelGenre->refresh();
 

@@ -38,7 +38,7 @@ class UpdateGenreUseCaseUnitTest extends BaseGenreTestUnit
     public function test_update_genre_with_invalid_categories_id()
     {
         $uuid = Uuid::uuid4()->toString();
-        $this->prepareRepository($uuid);
+        $this->prepareRepository($uuid, 0);
         $this->mockCategoryRepository([$uuid]);
         $useCase = new UpdateGenreUseCase(
             $this->repository,
@@ -57,10 +57,10 @@ class UpdateGenreUseCaseUnitTest extends BaseGenreTestUnit
         ]);
     }
 
-    protected function prepareRepository($uuid)
+    protected function prepareRepository($uuid, $timesCall = 1)
     {
         $this->repository->shouldReceive('findById')->once()->andReturn($this->mockEntity($uuid));
-        $this->repository->shouldReceive('update')->once()->andReturn();
+        $this->repository->shouldReceive('update')->times($timesCall)->andReturn();
     }
 
     protected function mockEntity(string $uuid)

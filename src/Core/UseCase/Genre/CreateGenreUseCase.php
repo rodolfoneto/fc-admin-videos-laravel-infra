@@ -40,7 +40,6 @@ class CreateGenreUseCase
                 id: $entity->id(),
                 name: $entity->name,
                 is_active: $entity->isActive,
-                // categories_id: $entity->categoriesId,
                 created_at: $entity->createdAt(),
             );
         } catch (Throwable $th) {

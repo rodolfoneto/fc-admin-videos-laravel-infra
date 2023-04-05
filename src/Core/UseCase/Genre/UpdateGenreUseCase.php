@@ -28,12 +28,12 @@ class UpdateGenreUseCase
     {
         $genre = $this->repository->findById($input->id);
         $genre->update($input->name);
-        foreach ($input->categoriesId as $category){
-            $genre->addCategory($category);
+        foreach ($input->categoriesId as $categoryId){
+            $genre->addCategory($categoryId);
         }
         try {
-            $this->repository->update($genre);
             $this->validateCategoriesId($input->categoriesId);
+            $this->repository->update($genre);
             $this->transaction->commit();
 
             return new GenreUpdateOutputDto(

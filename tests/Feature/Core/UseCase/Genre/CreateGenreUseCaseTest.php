@@ -5,6 +5,7 @@ namespace Tests\Feature\Core\UseCase\Genre;
 use App\Models\Category as CategoryModel;
 use App\Repositories\Eloquent\CategoryEloquentRepository;
 use Core\Domain\Exception\EntityValidationException;
+use Core\Domain\Exception\NotFoundException;
 use Core\Domain\Repository\CategoryRepositoryInterface;
 use Core\UseCase\DTO\Genre\GenreCreateInputDto;
 use Core\UseCase\DTO\Genre\GenreOutputDto;
@@ -83,7 +84,7 @@ class CreateGenreUseCaseTest extends BaseGenreUseCaseRepository
             transaction: $this->transaction,
             categoryRepository: $this->categoryRepository
         );
-        $this->expectException(\PDOException::class);
+        $this->expectException(NotFoundException::class);
         $useCase->execute($input);
     }
 

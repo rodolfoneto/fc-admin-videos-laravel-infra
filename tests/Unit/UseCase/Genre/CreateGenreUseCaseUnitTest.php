@@ -51,7 +51,7 @@ class CreateGenreUseCaseUnitTest extends BaseGenreTestUnit
         $uuid = Uuid::random();
         $entity = $this->createEntity($uuid);
 
-        $this->repository->shouldReceive('insert')->once()->andReturn($entity);
+        $this->repository->shouldReceive('insert')->andReturn($entity);
         $input = Mockery::mock(GenreCreateInputDto::class, [
             "new entity",
             [(string) $uuidCategory,'Cat_ID_FAKE_1', 'Cat_ID_FAKE_2'],

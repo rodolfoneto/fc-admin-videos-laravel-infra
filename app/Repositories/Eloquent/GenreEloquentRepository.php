@@ -27,22 +27,18 @@ class GenreEloquentRepository implements GenreRepositoryInterface
 
     public function insert(Genre $genre): Genre
     {
-        try {
-            $genreDb = $this->model->create([
-                'id' => $genre->id(),
-                'name' => $genre->name,
-                'is_active' => $genre->isActive,
-                'created_at' => $genre->createdAt(),
-            ]);
+        $genreDb = $this->model->create([
+            'id' => $genre->id(),
+            'name' => $genre->name,
+            'is_active' => $genre->isActive,
+            'created_at' => $genre->createdAt(),
+        ]);
 
-            if(count($genre->categoriesId) > 0) {
-                $genreDb->categories()->sync($genre->categoriesId);
-            }
-
-            return $this->toGenre($genreDb);
-        } catch (\Throwable $th) {
-            throw $th;
+        if(count($genre->categoriesId) > 0) {
+            $genreDb->categories()->sync($genre->categoriesId);
         }
+
+        return $this->toGenre($genreDb);
     }
 
     public function update(Genre $genre): Genre

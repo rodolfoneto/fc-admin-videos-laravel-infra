@@ -15,25 +15,32 @@ use Throwable;
 
 class CreateGenreUseCase
 {
-    public function __construct(
-        protected GenreRepositoryInterface $repository,
-        protected TransactionInterface $transaction,
-        protected CategoryRepositoryInterface $categoryRepository,
-    ) {
 
+    protected GenreRepositoryInterface $repository;
+    protected TransactionInterface $transaction;
+    protected CategoryRepositoryInterface $categoryRepository;
+
+    public function __construct(
+        GenreRepositoryInterface $repository,
+        TransactionInterface $transaction,
+        CategoryRepositoryInterface $categoryRepository,
+    ) {
+        $this->repository = $repository;
+        $this->transaction = $transaction;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function execute(GenreCreateInputDto $input): GenreOutputDto
     {
-        try{
+        try {
             $genre = new Genre(
                 name: $input->name,
                 id: null,
                 isActive: $input->is_active,
                 categoriesId: $input->categoriesId,
             );
-            $entity = $this->repository->insert($genre);
             $this->validateCategoriesId($input->categoriesId);
+            $entity = $this->repository->insert($genre);
             $this->transaction->commit();
 
             return new GenreOutputDto(

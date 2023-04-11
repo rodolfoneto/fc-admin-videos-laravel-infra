@@ -40,7 +40,7 @@ class CastMemberController extends Controller
             page: $request->get('page', '1'),
             totalPerPage: $request->get('total_per_page', 15)
         ));
-        return CastMemberResource::collection(collect($response))->additional([
+        return CastMemberResource::collection(collect($response->items))->additional([
             'meta' => [
                 'total' => $response->total,
                 'last_page' => $response->last_page,

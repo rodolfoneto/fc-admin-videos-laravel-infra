@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\Api\{
     CategoryController,
-    GenreController
+    GenreController,
+    CastMemberController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -12,3 +13,4 @@ Route::get('/', function() {
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('genre',      GenreController::class);
+Route::apiResource('cast-member',      CastMemberController::class);

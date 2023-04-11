@@ -23,10 +23,9 @@ class CastMember
         $this->validate();
     }
 
-    public function update(string $name, CastMemberType $type): void
+    public function update(string $name): void
     {
         $this->name = $name;
-        $this->type = $type;
     }
 
     protected function validate():void

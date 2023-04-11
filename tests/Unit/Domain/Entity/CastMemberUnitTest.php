@@ -56,8 +56,7 @@ class CastMemberUnitTest extends TestCase
             type: CastMemberType::ACTOR,
             id: $uuid,
         );
-        $entity->update(name: "Updated", type: CastMemberType::DIRECTOR);
+        $entity->update(name: "Updated");
         $this->assertEquals("Updated", $entity->name);
-        $this->assertEquals(CastMemberType::DIRECTOR, $entity->type);
     }
 }

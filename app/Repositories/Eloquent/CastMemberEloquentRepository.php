@@ -61,11 +61,12 @@ class CastMemberEloquentRepository implements \Core\Domain\Repository\CastMember
 
     public function findAll(string $filter = '', $order = 'DESC'): array
     {
-        return $this->model->where(function($query) use ($filter){
-            if(!empty($filter)) {
-                $query->where('name', 'LIKE', "%{$filter}%");
-            }
-        })->orderBy('name', $order)
+        $query = $this->model;
+        if(!empty($filter)) {
+            $query = $query->where('name', 'LIKE', "%%filter%");
+        }
+        $query = $query->orderBy('name', $order);
+        return $query
             ->get()
             ->toArray();
     }

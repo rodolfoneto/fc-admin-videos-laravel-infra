@@ -26,13 +26,11 @@ class UpdateCastMemberUseCaseUnitTest extends BaseCastMemberTestUnit
         $input = new CastMemberUpdateInputDto(
             id: $uuid,
             name: "updated",
-            type: CastMemberType::ACTOR->value,
         );
         $useCase = new UpdateCastMemberUseCase($this->repository);
         $output = $useCase->execute($input);
         $this->assertEquals($uuid, $output->id);
         $this->assertEquals("updated", $output->name);
-        $this->assertEquals(CastMemberType::ACTOR->value, $output->type);
     }
 
     protected function mockRepository($timesCall = 1, $entity, $entityUpdated)

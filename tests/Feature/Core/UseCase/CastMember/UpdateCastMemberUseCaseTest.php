@@ -25,14 +25,12 @@ class UpdateCastMemberUseCaseTest extends TestCase
         $output = $useCase->execute(new CastMemberUpdateInputDto(
             id: $castMemberDb->id,
             name: "New CastMember",
-            type: CastMemberType::ACTOR->value
         ));
         $this->assertInstanceOf(CastMemberOutputDto::class, $output);
         $this->assertNotEmpty($output->id);
         $this->assertDatabaseHas('cast_members', [
             'id' => $output->id,
             'name' => $output->name,
-            'type'=> $output->type,
         ]);
     }
 
@@ -44,7 +42,6 @@ class UpdateCastMemberUseCaseTest extends TestCase
         $useCase->execute(new CastMemberUpdateInputDto(
             id: $castMemberDb->id,
             name: "N",
-            type: CastMemberType::ACTOR->value
         ));
     }
 
@@ -56,7 +53,6 @@ class UpdateCastMemberUseCaseTest extends TestCase
         $useCase->execute(new CastMemberUpdateInputDto(
             id: $uuid,
             name: "New CastMember",
-            type: CastMemberType::ACTOR->value
         ));
     }
 

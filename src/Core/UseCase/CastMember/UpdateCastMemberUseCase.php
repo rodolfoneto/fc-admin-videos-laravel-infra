@@ -23,7 +23,6 @@ class UpdateCastMemberUseCase
         }
         $castMember->update(
             name: $input->name,
-            type: CastMemberType::from($input->type),
         );
         $response = $this->repository->update($castMember);
         return new CastMemberOutputDto(

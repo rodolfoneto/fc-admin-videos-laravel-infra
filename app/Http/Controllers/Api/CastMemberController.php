@@ -78,7 +78,6 @@ class CastMemberController extends Controller
         $response = $useCase->execute(new CastMemberUpdateInputDto(
             id: $id,
             name: $request->name,
-            type: $request->type
         ));
         return (new CastMemberResource($response))
             ->response()

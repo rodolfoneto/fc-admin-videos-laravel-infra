@@ -3,14 +3,16 @@
 namespace Core\Domain\Entity;
 
 use Core\Domain\Entity\Traits\MethodsMagicTrait;
+use Core\Domain\Factory\CategoryValidatorFactory;
+use Core\Domain\Notification\NotificationException;
 use Core\Domain\Validation\DomainValidation;
 use Core\Domain\ValueObject\Uuid;
 use DateTime;
 
-class Category
+class Category extends Entity
 {
 
-    use MethodsMagicTrait;
+//    use MethodsMagicTrait;
 
     public function __construct(
         protected Uuid|string $id = '',
@@ -20,6 +22,7 @@ class Category
         protected DateTime|string $createdAt = '',
         protected DateTime|string $updatedAt = '',
     ) {
+        parent::__construct();
         $this->id = $this->id ? new Uuid($this->id) : Uuid::random();
         $this->createdAt = $this->createdAt ? new DateTime($this->createdAt) : new DateTime();
         $this->updatedAt = $this->updatedAt ? new DateTime($this->updatedAt) : new DateTime();
@@ -47,9 +50,9 @@ class Category
 
     private function validate()
     {
-        DomainValidation::notNull($this->name);
-        DomainValidation::strMinLength($this->name, 2);
-        DomainValidation::strMaxLength($this->name);
-        DomainValidation::strCanNullOrMaxLength($this->description);
+        CategoryValidatorFactory::create()->validate($this);
+        if($this->notification->hasErrors()) {
+            throw new NotificationException($this->notification->getMessage('category'));
+        }
     }
 }

@@ -7,6 +7,7 @@ use App\Repositories\Eloquent\CategoryEloquentRepository;
 use Core\Domain\Entity\Category as EntityCategory;
 use Core\Domain\Exception\EntityValidationException;
 use Core\Domain\Exception\NotFoundException;
+use Core\Domain\Notification\NotificationException;
 use Core\Domain\Repository\CategoryRepositoryInterface;
 use Core\Domain\Repository\PaginationInterface;
 use Illuminate\Support\Str;
@@ -109,7 +110,7 @@ class CategoryEloquentRepositoryTest extends TestCase
     {
         $nameCategory = "n";
         $model = Model::factory()->create();
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         $entity = new EntityCategory(
             id: $model->id,
             name: $nameCategory,
@@ -124,7 +125,7 @@ class CategoryEloquentRepositoryTest extends TestCase
         $nameCategory = "new name";
         $descriptionCategory = Str::random(256);
         $model = Model::factory()->create();
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         $entity = new EntityCategory(
             id: $model->id,
             name: $nameCategory,

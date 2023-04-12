@@ -4,9 +4,11 @@ namespace Tests\Unit\Domain\Entity;
 
 use Core\Domain\Entity\Category;
 use Core\Domain\Exception\EntityValidationException;
+use Core\Domain\Notification\NotificationException;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
 
 class CategoryUnitTest extends TestCase
 {
@@ -73,7 +75,7 @@ class CategoryUnitTest extends TestCase
 
     public function testCreateNewCategoryWithInvalidName()
     {
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         new Category(
             name: "N",
             description: "New desc",
@@ -91,10 +93,10 @@ class CategoryUnitTest extends TestCase
 
     public function testCreateNewCategoryWithInvalidDescription()
     {
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         new Category(
             name: "New Category",
-            description: random_bytes(256),
+            description: Str::random(256),
         );
     }
 

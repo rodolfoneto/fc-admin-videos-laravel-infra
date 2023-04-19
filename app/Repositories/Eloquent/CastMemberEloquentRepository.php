@@ -4,14 +4,15 @@ namespace App\Repositories\Eloquent;
 
 use App\Repositories\Presenters\PaginationPresenter;
 use Core\Domain\Entity\CastMember;
+use Core\Domain\Entity\Entity;
 use Core\Domain\Enum\CastMemberType;
 use Core\Domain\Exception\NotFoundException;
 use Core\Domain\Repository\PaginationInterface;
 use App\Models\CastMember as Model;
 use Core\Domain\ValueObject\Uuid;
-use function PHPUnit\Framework\assertGreaterThanOrEqual;
+use Core\Domain\Repository\CastMemberRepositoryInterface;
 
-class CastMemberEloquentRepository implements \Core\Domain\Repository\CastMemberRepositoryInterface
+class CastMemberEloquentRepository implements CastMemberRepositoryInterface
 {
 
     public function __construct(
@@ -19,28 +20,28 @@ class CastMemberEloquentRepository implements \Core\Domain\Repository\CastMember
     ) {
     }
 
-    public function insert(CastMember $castMember): CastMember
+    public function insert(Entity $entity): CastMember
     {
         $response = $this->model->create([
-            'id' => $castMember->id(),
-            'name' => $castMember->name,
-            'type' => $castMember->type->value,
-            'created_at' => $castMember->createdAt(),
+            'id' => $entity->id(),
+            'name' => $entity->name,
+            'type' => $entity->type->value,
+            'created_at' => $entity->createdAt(),
         ]);
-        return $this->toEntity($response);
+        return $this->toCastMember($response);
     }
 
-    public function update(CastMember $castMember): CastMember
+    public function update(Entity $entity): CastMember
     {
-        if(!$castMemberDb = $this->model->find($castMember->id())) {
-            throw new NotFoundException("CastMember {$castMember->id()} not founded");
+        if(!$castMemberDb = $this->model->find($entity->id())) {
+            throw new NotFoundException("CastMember {$entity->id()} not founded");
         }
         $castMemberDb->update([
-            'name' => $castMember->name,
-            'type' => $castMember->type->value,
+            'name' => $entity->name,
+            'type' => $entity->type->value,
         ]);
         $castMemberDb->refresh();
-        return $this->toEntity($castMemberDb);
+        return $this->toCastMember($castMemberDb);
     }
 
     public function delete(string $uuid): bool
@@ -56,7 +57,7 @@ class CastMemberEloquentRepository implements \Core\Domain\Repository\CastMember
         if(!$model = $this->model->find($uuid)) {
             throw new NotFoundException("CastMember {$uuid} not founded");
         }
-        return $this->toEntity($model);
+        return $this->toCastMember($model);
     }
 
     public function findAll(string $filter = '', $order = 'DESC'): array
@@ -71,6 +72,14 @@ class CastMemberEloquentRepository implements \Core\Domain\Repository\CastMember
             ->toArray();
     }
 
+    public function getIdsListIds(array $castMembersId = []): array
+    {
+        return $this->model
+            ->whereIn('id', $castMembersId)
+            ->pluck('id')
+            ->toArray();
+    }
+
     public function paginate(string $filter = '', $order = 'DESC', $page = '1', $totalPerPage = 15): PaginationInterface
     {
         $paginator = $this->model->where(function($query) use ($filter){
@@ -82,7 +91,7 @@ class CastMemberEloquentRepository implements \Core\Domain\Repository\CastMember
         return new PaginationPresenter($paginator);
     }
 
-    protected function toEntity(Model $input): CastMember
+    protected function toCastMember(Model $input): CastMember
     {
         return new CastMember(
             name: $input->name,

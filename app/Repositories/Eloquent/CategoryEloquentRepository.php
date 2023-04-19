@@ -20,28 +20,28 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
         $this->model = $model;
     }
 
-    public function insert(Entity $category): Entity
+    public function insert(Entity $entity): Entity
     {
         $category = $this->model->create([
-            'id' => $category->id,
-            'name' => $category->name,
-            'description' => $category->description,
-            'is_active' => $category->isActive,
-            'created_at' => $category->createdAt(),
+            'id' => $entity->id,
+            'name' => $entity->name,
+            'description' => $entity->description,
+            'is_active' => $entity->isActive,
+            'created_at' => $entity->createdAt(),
         ]);
         return $this->toCategory($category);
     }
 
-    public function update(Entity $category): Entity
+    public function update(Entity $entity): Entity
     {
-        if (!$modelCategory = $this->model->find($category->id())) {
+        if (!$modelCategory = $this->model->find($entity->id())) {
             throw new NotFoundException();
         }
 
         $modelCategory->update([
-            'name' => $category->name,
-            'description' => $category->description,
-            'is_active' =>$category->isActive,
+            'name' => $entity->name,
+            'description' => $entity->description,
+            'is_active' =>$entity->isActive,
         ]);
 
         $modelCategory->refresh();
@@ -59,10 +59,10 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
 
     public function findById(string $uuid): Entity
     {
-        if(!$category = $this->model->find($uuid)) {
+        if(!$entity = $this->model->find($uuid)) {
             throw new NotFoundException('Entity not founded');
         }
-        return $this->toCategory($category);
+        return $this->toCategory($entity);
     }
 
     public function findAll(string $filter = '', $order = 'DESC'): array

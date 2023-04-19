@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Genre as GenreModel;
 use App\Repositories\Presenters\PaginationPresenter;
+use Core\Domain\Entity\Entity;
 use Core\Domain\Exception\NotFoundException;
 use Core\Domain\Entity\Genre;
 use Core\Domain\ValueObject\Uuid;
@@ -25,34 +26,34 @@ class GenreEloquentRepository implements GenreRepositoryInterface
         $this->transaction = $transaction;
     }
 
-    public function insert(Genre $genre): Genre
+    public function insert(Entity $entity): Genre
     {
         $genreDb = $this->model->create([
-            'id' => $genre->id(),
-            'name' => $genre->name,
-            'is_active' => $genre->isActive,
-            'created_at' => $genre->createdAt(),
+            'id' => $entity->id(),
+            'name' => $entity->name,
+            'is_active' => $entity->isActive,
+            'created_at' => $entity->createdAt(),
         ]);
 
-        if(count($genre->categoriesId) > 0) {
-            $genreDb->categories()->sync($genre->categoriesId);
+        if(count($entity->categoriesId) > 0) {
+            $genreDb->categories()->sync($entity->categoriesId);
         }
 
         return $this->toGenre($genreDb);
     }
 
-    public function update(Genre $genre): Genre
+    public function update(Entity $entity): Genre
     {
-        if (!$modelGenre = $this->model->find($genre->id())) {
+        if (!$modelGenre = $this->model->find($entity->id())) {
             throw new NotFoundException();
         }
 
         $modelGenre->update([
-            'name' => $genre->name,
+            'name' => $entity->name,
         ]);
 
-        if(count($genre->categoriesId) > 0) {
-            $modelGenre->categories()->sync($genre->categoriesId);
+        if(count($entity->categoriesId) > 0) {
+            $modelGenre->categories()->sync($entity->categoriesId);
         }
 
         $modelGenre->refresh();

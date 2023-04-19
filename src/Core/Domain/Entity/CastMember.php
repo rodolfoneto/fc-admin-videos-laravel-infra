@@ -8,10 +8,8 @@ use Core\Domain\Enum\CastMemberType;
 use Core\Domain\ValueObject\Uuid;
 use DateTime;
 
-class CastMember
+class CastMember extends Entity
 {
-    use MethodsMagicTrait;
-
     public function __construct(
         protected string $name,
         protected CastMemberType $type,

@@ -231,9 +231,9 @@ class VideoUnitTest extends TestCase
             publish: false,
             thumbHalf: new Image(path: 'asdasdad/adsads.jpg'),
         );
-        $this->assertNotEmpty($video->thumbHalf());
-        $this->assertInstanceOf(Image::class, $video->thumbHalf());
-        $this->assertEquals('asdasdad/adsads.jpg', $video->thumbHalf()->path());
+        $this->assertNotEmpty($video->thumbHalfFile());
+        $this->assertInstanceOf(Image::class, $video->thumbHalfFile());
+        $this->assertEquals('asdasdad/adsads.jpg', $video->thumbHalfFile()->path());
     }
 
     public function test_value_object_to_banner_file()

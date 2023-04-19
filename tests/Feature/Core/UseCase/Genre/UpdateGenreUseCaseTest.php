@@ -6,6 +6,7 @@ namespace Tests\Feature\Core\UseCase\Genre;
 use App\Repositories\Eloquent\CategoryEloquentRepository;
 use Core\Domain\Exception\EntityValidationException;
 use Core\Domain\Exception\NotFoundException;
+use Core\Domain\Notification\NotificationException;
 use Core\Domain\ValueObject\Uuid;
 use Core\UseCase\DTO\Genre\GenreUpdateInputDto;
 use Core\UseCase\DTO\Genre\GenreUpdateOutputDto;
@@ -64,7 +65,7 @@ class UpdateGenreUseCaseTest extends BaseGenreUseCaseRepository
             transaction: $this->transaction,
             categoryRepository: $this->categoryRepository
         );
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         $useCase->execute($input);
     }
 

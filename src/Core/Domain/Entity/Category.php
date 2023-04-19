@@ -12,8 +12,6 @@ use DateTime;
 class Category extends Entity
 {
 
-//    use MethodsMagicTrait;
-
     public function __construct(
         protected Uuid|string $id = '',
         protected string $name = "",

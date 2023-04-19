@@ -6,8 +6,8 @@ use Core\Domain\Entity\Entity;
 
 interface EntityRepositoryInterface
 {
-    public function insert(Entity $genre): Entity;
-    public function update(Entity $genre): Entity;
+    public function insert(Entity $entity): Entity;
+    public function update(Entity $entity): Entity;
     public function delete(string $uuid): bool;
 
     public function findById(string $uuid): Entity;

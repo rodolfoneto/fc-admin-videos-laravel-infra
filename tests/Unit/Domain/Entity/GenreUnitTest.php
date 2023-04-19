@@ -5,6 +5,7 @@ namespace Tests\Unit\Domain\Entity;
 use Core\Domain\Entity\Genre;
 use Core\Domain\Exception\EntityValidationException;
 use Core\Domain\Exception\NotFoundException;
+use Core\Domain\Notification\NotificationException;
 use Core\Domain\ValueObject\Uuid;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
@@ -20,8 +21,8 @@ class GenreUnitTest extends TestCase
         $createdAt = date('Y-m-d H:i:s');
 
         $genre = new Genre(
-            id: new Uuid($uuid),
             name: "New Genre",
+            id: new Uuid($uuid),
             isActive: false,
             createdAt: new DateTime($createdAt),
         );
@@ -68,7 +69,7 @@ class GenreUnitTest extends TestCase
 
     public function test_create_with_too_short_name()
     {
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         new Genre(
             name: "N"
         );
@@ -76,7 +77,7 @@ class GenreUnitTest extends TestCase
 
     public function test_create_with_name_too_large()
     {
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         new Genre(
             name: Str::random(256),
         );
@@ -100,7 +101,7 @@ class GenreUnitTest extends TestCase
         $genre = new Genre(
             name: "New Genre"
         );
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         $genre->update(name: "N");
     }
 
@@ -109,7 +110,7 @@ class GenreUnitTest extends TestCase
         $genre = new Genre(
             name: "New Genre",
         );
-        $this->expectException(EntityValidationException::class);
+        $this->expectException(NotificationException::class);
         $genre->update(name: Str::random(256));
     }
 

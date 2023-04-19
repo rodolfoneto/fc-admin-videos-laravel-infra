@@ -4,15 +4,14 @@ namespace Core\Domain\Entity;
 
 use Core\Domain\Entity\Traits\MethodsMagicTrait;
 use Core\Domain\Exception\NotFoundException;
+use Core\Domain\Factory\GenreValidatorFactory;
+use Core\Domain\Notification\NotificationException;
 use Core\Domain\Validation\DomainValidation;
 use Core\Domain\ValueObject\Uuid;
 use DateTime;
 
-class Genre
+class Genre extends Entity
 {
-
-    use MethodsMagicTrait;
-
     public function __construct(
         protected string $name,
         protected ?Uuid $id = null,
@@ -20,6 +19,7 @@ class Genre
         protected array $categoriesId = [],
         protected ?DateTime $createdAt = null,
     ) {
+        parent::__construct();
         $this->id = $this->id ? $this->id : Uuid::random();
         $this->createdAt = $this->createdAt ? $this->createdAt : new DateTime();
 
@@ -58,8 +58,9 @@ class Genre
 
     protected function valid(): void
     {
-        DomainValidation::notNull($this->name, 'The name field is required.');
-        DomainValidation::strMinLength($this->name, 2, "The name must be at least 2 characters.");
-        DomainValidation::strMaxLength($this->name, 255, "The name must not be greater than 255 characters.");
+       GenreValidatorFactory::create()->validate($this);
+        if($this->notification->hasErrors()) {
+            throw new NotificationException($this->notification->getMessage('genre'));
+        }
     }
 }

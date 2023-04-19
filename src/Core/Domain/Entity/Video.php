@@ -87,9 +87,19 @@ class Video extends Entity
         return $this->thumbFile;
     }
 
-    public function thumbHalf(): ?Image
+    public function setThumbFile(Media $thumbFile): void
+    {
+        $this->thumbFile = $thumbFile;
+    }
+
+    public function thumbHalfFile(): ?Image
     {
         return $this->thumbHalf;
+    }
+
+    public function setThumbHalfFile(Media $thumbHalf): void
+    {
+        $this->thumbHalf = $thumbHalf;
     }
 
     public function bannerFile(): ?Image
@@ -97,14 +107,29 @@ class Video extends Entity
         return $this->bannerFile;
     }
 
+    public function setBannerFile(Media $bannerFile): void
+    {
+        $this->bannerFile = $bannerFile;
+    }
+
     public function trailerFile(): ?Media
     {
         return $this->trailerFile;
     }
 
+    public function setTrailerFile(Media $trailerFile): void
+    {
+        $this->trailerFile = $trailerFile;
+    }
+
     public function videoFile(): ?Media
     {
         return $this->videoFile;
+    }
+
+    public function setVideoFile(Media $videoFiles): void
+    {
+        $this->videoFile = $videoFiles;
     }
 
     protected function validate()

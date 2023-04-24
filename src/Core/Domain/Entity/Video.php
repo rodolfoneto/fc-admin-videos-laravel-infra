@@ -87,7 +87,7 @@ class Video extends Entity
         return $this->thumbFile;
     }
 
-    public function setThumbFile(Media $thumbFile): void
+    public function setThumbFile(Image $thumbFile): void
     {
         $this->thumbFile = $thumbFile;
     }
@@ -97,7 +97,7 @@ class Video extends Entity
         return $this->thumbHalf;
     }
 
-    public function setThumbHalfFile(Media $thumbHalf): void
+    public function setThumbHalfFile(Image $thumbHalf): void
     {
         $this->thumbHalf = $thumbHalf;
     }
@@ -107,7 +107,7 @@ class Video extends Entity
         return $this->bannerFile;
     }
 
-    public function setBannerFile(Media $bannerFile): void
+    public function setBannerFile(Image $bannerFile): void
     {
         $this->bannerFile = $bannerFile;
     }

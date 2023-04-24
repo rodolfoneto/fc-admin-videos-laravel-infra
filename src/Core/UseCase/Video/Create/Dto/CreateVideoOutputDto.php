@@ -17,10 +17,10 @@ class CreateVideoOutputDto
         public array $categories = [],
         public array $genres = [],
         public array $castMembers = [],
-        protected ?string $thumbFile = null,
-        protected ?string $thumbHalfFile = null,
-        protected ?string $bannerFile = null,
-        protected ?string $trailerFile = null,
-        protected ?string $videoFile = null,
+        public ?string $thumbFile = null,
+        public ?string $thumbHalfFile = null,
+        public ?string $bannerFile = null,
+        public ?string $trailerFile = null,
+        public ?string $videoFile = null,
     ) {}
 }

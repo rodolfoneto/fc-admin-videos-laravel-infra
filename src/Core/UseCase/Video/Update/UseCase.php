@@ -1,39 +1,49 @@
 <?php
 
-namespace Core\UseCase\Video\Create;
+namespace Core\UseCase\Video\Update;
 
-use Core\Domain\Builder\Video\BuilderInterface;
-use Core\Domain\Builder\Video\CreateVideoBuilder;
+use Core\Domain\Builder\Video\{
+    BuilderInterface,
+    UpdateVideoBuilder,
+};
+use Core\Domain\Exception\NotFoundException;
 use Core\UseCase\Video\BaseVideoUseCase;
-use Core\UseCase\Video\Create\Dto\CreateVideoInputDto;
-use Core\UseCase\Video\Create\Dto\CreateVideoOutputDto;
+use Core\UseCase\Video\Update\Dto\{InputDto, OutputDto,};
 use Throwable;
 
-
-class CreateVideoUseCase extends BaseVideoUseCase
+class UseCase extends BaseVideoUseCase
 {
-    public function execute(CreateVideoInputDto $input): CreateVideoOutputDto
+    public function execute(InputDto $input): OutputDto
     {
         $this->validateAllIds($input);
-        $this->builderVideo->createEntity($input);
-
+        if(!$entity = $this->repository->findById($input->id)) {
+            throw new NotFoundException('Video not founded');
+        }
+        $entity->update(
+            title: $input->title,
+            description: $input->description,
+        );
+        $this->builderVideo->setEntity($entity);
         try {
-            $this->repository->insert(entity: $this->builderVideo->getEntity());
-            $this->storageFiles($input);
+            $this->repository->update(entity: $this->builderVideo->getEntity());
+            $this->storageFiles(input: $input);
             $this->repository->updateMedia(entity: $this->builderVideo->getEntity());
             $this->transaction->commit();
             return $this->createOutput();
         } catch (Throwable $th) {
             $this->transaction->rollback();
-            //if(isset($pathMedia)) $this->storage->delete($pathMedia);
-            throw $th;
         }
     }
 
-    private function createOutput(): CreateVideoOutputDto
+    protected function getBuilderInstance(): BuilderInterface
+    {
+        return new UpdateVideoBuilder();
+    }
+
+    private function createOutput(): OutputDto
     {
         $video = $this->builderVideo->getEntity();
-        return new CreateVideoOutputDto(
+        return new OutputDto(
             id: $video->id(),
             title: $video->title,
             description: $video->description,
@@ -50,10 +60,5 @@ class CreateVideoUseCase extends BaseVideoUseCase
             trailerFile: $video->trailerFile()?->path(),
             videoFile: $video->videoFile()?->path(),
         );
-    }
-
-    protected function getBuilderInstance(): BuilderInterface
-    {
-        return new CreateVideoBuilder();
     }
 }

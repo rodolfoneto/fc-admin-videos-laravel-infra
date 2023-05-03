@@ -315,4 +315,60 @@ class VideoUnitTest extends TestCase
             publish: false,
         );
     }
+
+    public function test_update_exception()
+    {
+        $video = new Video(
+            title: "New Video",
+            description: Str::random(100),
+            yearLaunched: 2029,
+            duration: 12,
+            opened: true,
+            rating: Rating::RATE12,
+            publish: false,
+        );
+        $this->expectException(NotificationException::class);
+        $video->update(
+            title: 'N',
+            description: 'D',
+        );
+    }
+
+    public function test_update()
+    {
+        $video = new Video(
+            title: "New Video",
+            description: Str::random(100),
+            yearLaunched: 2029,
+            duration: 12,
+            opened: true,
+            rating: Rating::RATE12,
+            publish: false,
+        );
+        $video->update(
+            title: 'Updated Video',
+            description: 'New description',
+        );
+        $this->assertEquals('Updated Video', $video->title);
+        $this->assertEquals('New description', $video->description);
+    }
+
+    public function test_update_without_change_description()
+    {
+        $description = Str::random(100);
+        $video = new Video(
+            title: "New Video",
+            description: $description,
+            yearLaunched: 2029,
+            duration: 12,
+            opened: true,
+            rating: Rating::RATE12,
+            publish: false,
+        );
+        $video->update(
+            title: 'Updated Video',
+        );
+        $this->assertEquals('Updated Video', $video->title);
+        $this->assertEquals($description, $video->description);
+    }
 }

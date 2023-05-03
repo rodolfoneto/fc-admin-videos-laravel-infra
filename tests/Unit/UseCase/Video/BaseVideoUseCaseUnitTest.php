@@ -2,23 +2,22 @@
 
 namespace Tests\Unit\UseCase\Video;
 
+use Core\Domain\Entity\Entity;
 use Core\Domain\Entity\Video;
 use Core\Domain\Enum\Rating;
-use Core\Domain\Repository\{
-    CastMemberRepositoryInterface,
+use Core\Domain\Exception\NotFoundException;
+use Core\Domain\Repository\{CastMemberRepositoryInterface,
     CategoryRepositoryInterface,
     GenreRepositoryInterface,
-    VideoRepositoryInterface,
-};
-use Core\Domain\Exception\NotFoundException;
-use Core\UseCase\Video\Create\BaseVideoUseCase;
-
+    VideoRepositoryInterface,};
+use Core\Domain\ValueObject\Uuid;
 use Core\UseCase\Interface\{FileStorageInterface, TransactionInterface};
-use Core\UseCase\Video\Create\CreateVideoUseCase as UseCase;
+use Core\UseCase\Video\BaseVideoUseCase;
 use Core\UseCase\Video\Interfaces\VideoEventManagerInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use DateTime;
 
 abstract class BaseVideoUseCaseUnitTest extends TestCase
 {
@@ -219,10 +218,13 @@ abstract class BaseVideoUseCaseUnitTest extends TestCase
         int $timesCallAction,
         int $timesCallUpdateMedia,
     ) {
+        $entity = $this->createEntity();
         $repository = Mockery::mock(stdClass::class, VideoRepositoryInterface::class);
         $repository->shouldReceive($this->getActionRepository())
             ->times($timesCallAction)
-            ->andReturn($this->createMockEntity());
+            ->andReturn($entity);
+        $repository->shouldReceive('findById')
+            ->andReturn($entity);
         $repository->shouldReceive('updateMedia')
             ->times($timesCallUpdateMedia);
         return $repository;
@@ -290,6 +292,20 @@ abstract class BaseVideoUseCaseUnitTest extends TestCase
             true,
             Rating::RATE10,
         ]);
+        return $entity;
+    }
+
+    protected function createEntity(): Video
+    {
+        $entity = new Video(
+            title: 'New Video',
+            description: 'Description',
+            yearLaunched: 123,
+            duration: 123,
+            opened: true,
+            rating: Rating::L,
+//            id: Uuid::random(),publish: true
+        );
         return $entity;
     }
 }

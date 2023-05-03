@@ -2,6 +2,7 @@
 
 namespace Core\Domain\Builder\Video;
 
+use Core\Domain\Entity\Entity;
 use Core\Domain\Entity\Video;
 use Core\Domain\ValueObject\Uuid;
 use DateTime;
@@ -21,6 +22,12 @@ class UpdateVideoBuilder extends CreateVideoBuilder
             createdAt: new \DateTime($input->createdAt)
         );
         $this->addIds($input);
+        return $this;
+    }
+
+    public function setEntity(Entity $entity): BuilderInterface
+    {
+        $this->entity = $entity;
         return $this;
     }
 }

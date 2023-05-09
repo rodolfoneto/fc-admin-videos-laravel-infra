@@ -24,6 +24,7 @@ abstract class BaseVideoUseCase
         protected TransactionInterface $transaction,
         protected FileStorageInterface $storage,
         protected VideoEventManagerInterface $eventManager,
+
         protected CategoryRepositoryInterface $categoryRepository,
         protected GenreRepositoryInterface $genreRepository,
         protected CastMemberRepositoryInterface $castMemberRepository,

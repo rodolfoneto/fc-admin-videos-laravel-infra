@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\ImageTypes;
 
 return new class extends Migration
 {
@@ -13,16 +14,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('videos', function (Blueprint $table) {
+        Schema::create('images_video', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->smallInteger('year_launched');
-            $table->boolean('opened');
-            $table->string('rating', 3);
-            $table->smallInteger('duration');
+            $table->uuid('video_id')->index();
+            $table->foreign('video_id')->references('id')->on('videos');
+            $table->string('file_path');
+            $table->enum('type', array_keys(ImageTypes::cases()));
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('videos');
+        Schema::dropIfExists('images_video');
     }
 };

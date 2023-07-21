@@ -16,6 +16,10 @@ use App\Models\Genre as GenreModel;
 
 class UpdateGenreUseCaseTest extends BaseGenreUseCaseRepository
 {
+
+    protected $categoryModel;
+    protected $categoryRepository;
+
     public function test_update()
     {
         $genre = GenreModel::factory()->create();

@@ -24,7 +24,7 @@ abstract class Entity
         throw new Exception("Property {$param} not founded in class {$className}");
     }
 
-    public function id()
+    public function id(): string
     {
         return (string) $this->id;
     }

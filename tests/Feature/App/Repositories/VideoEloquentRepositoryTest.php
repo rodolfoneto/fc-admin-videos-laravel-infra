@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\App\Repositories;
 
+use App\Events\VideoEvent;
 use App\Models\{
     CastMember,
     Category,
@@ -198,5 +199,56 @@ class VideoEloquentRepositoryTest extends TestCase
             [3, 1, 10, 3, 1],
             [0, 1, 15, 0, 1],
         ];
+    }
+
+    public function test_update_not_found_id()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+        );
+
+        $this->repository->update($entity);
+    }
+
+    public function test_update()
+    {
+        $entityDb = Model::factory()->create();
+
+        $entity = new VideoEntity(
+            id: new Uuid($entityDb->id),
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+        );
+
+        $response = $this->repository->update($entity);
+
+        $this->assertInstanceOf(VideoEntity::class, $response);
+        $this->assertSame($entity->title, $response->title);
+        $this->assertSame($entity->description, $response->description);
+        $this->assertSame($entity->yearLaunched, $response->yearLaunched);
+        $this->assertSame($entity->rating, $response->rating);
+        $this->assertSame($entity->duration, $response->duration);
+        $this->assertSame($entity->opened, $response->opened);
+
+        $this->assertDatabaseHas('videos', [
+            'id' => $entity->id(),
+            'title' => $entity->title,
+            'description' => $entity->description,
+            'year_launched' => $entity->yearLaunched,
+            'rating' => $entity->rating,
+            'duration' => $entity->duration,
+            'opened' => $entity->opened,
+        ]);
     }
 }

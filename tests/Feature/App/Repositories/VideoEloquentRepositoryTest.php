@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\App\Repositories;
 
-use App\Events\VideoEvent;
 use App\Models\{
     CastMember,
     Category,
@@ -145,12 +144,12 @@ class VideoEloquentRepositoryTest extends TestCase
     {
         Model::factory()->count(30)->create();
         Model::factory()->create(['title' => 'AAAAAAAAAA']);
-        Model::factory()->create(['title' => 'Z Z Z Z Z Z Z Z Z Z']);
+        Model::factory()->create(['title' => 'Zzz Z Z Z Z Z Z Z']);
 
         $response = $this->repository->findAll(order: "ASC");
         $this->assertCount(32, $response);
         $this->assertEquals('AAAAAAAAAA', $response[0]->title);
-        $this->assertEquals('Z Z Z Z Z Z Z Z Z Z', $response[31]->title);
+        $this->assertEquals('Zzz Z Z Z Z Z Z Z', $response[31]->title);
     }
 
     public function test_find_all_with_filters_and_order()
@@ -219,6 +218,10 @@ class VideoEloquentRepositoryTest extends TestCase
 
     public function test_update()
     {
+        $categories  = Category::factory()->count(10)->create();
+        $genres      = Genre::factory()->count(4)->create();
+        $castMembers = CastMember::factory()->count(4)->create();
+
         $entityDb = Model::factory()->create();
 
         $entity = new VideoEntity(
@@ -231,15 +234,27 @@ class VideoEloquentRepositoryTest extends TestCase
             opened: true,
         );
 
-        $response = $this->repository->update($entity);
+        foreach ($categories as $item) {
+            $entity->addCategoryId($item->id);
+        }
+        
+        foreach ($genres as $item) {
+            $entity->addGenreId($item->id);
+        }
 
-        $this->assertInstanceOf(VideoEntity::class, $response);
-        $this->assertSame($entity->title, $response->title);
-        $this->assertSame($entity->description, $response->description);
-        $this->assertSame($entity->yearLaunched, $response->yearLaunched);
-        $this->assertSame($entity->rating, $response->rating);
-        $this->assertSame($entity->duration, $response->duration);
-        $this->assertSame($entity->opened, $response->opened);
+        foreach ($castMembers as $item) {
+            $entity->addCastMemberId($item->id);
+        }
+
+        $entityInDb = $this->repository->update($entity);
+
+        $this->assertInstanceOf(VideoEntity::class, $entityInDb);
+        $this->assertSame($entity->title, $entityInDb->title);
+        $this->assertSame($entity->description, $entityInDb->description);
+        $this->assertSame($entity->yearLaunched, $entityInDb->yearLaunched);
+        $this->assertSame($entity->rating, $entityInDb->rating);
+        $this->assertSame($entity->duration, $entityInDb->duration);
+        $this->assertSame($entity->opened, $entityInDb->opened);
 
         $this->assertDatabaseHas('videos', [
             'id' => $entity->id(),
@@ -249,6 +264,30 @@ class VideoEloquentRepositoryTest extends TestCase
             'rating' => $entity->rating,
             'duration' => $entity->duration,
             'opened' => $entity->opened,
+        ]);
+
+        $this->assertEquals($categories->pluck('id')->toArray(), $entityInDb->categoriesId);
+        $this->assertEquals($genres->pluck('id')->toArray(), $entityInDb->genresId);
+        $this->assertEquals($castMembers->pluck('id')->toArray(), $entityInDb->castMembersId);
+    }
+
+    public function test_delete_not_found(): void
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->repository->delete('FAKE_ID');
+    }
+
+    public function test_delete(): void
+    {
+        $entityDb = Model::factory()->create();
+
+        $response = $this->repository->delete($entityDb->id);
+
+        $this->assertTrue($response);
+
+        $this->assertSoftDeleted('videos', [
+            'id' => $entityDb->id,
         ]);
     }
 }

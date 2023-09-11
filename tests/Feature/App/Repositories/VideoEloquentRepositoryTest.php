@@ -246,15 +246,15 @@ class VideoEloquentRepositoryTest extends TestCase
             $entity->addCastMemberId($item->id);
         }
 
-        $entityInDb = $this->repository->update($entity);
+        $entityUpdated = $this->repository->update($entity);
 
-        $this->assertInstanceOf(VideoEntity::class, $entityInDb);
-        $this->assertSame($entity->title, $entityInDb->title);
-        $this->assertSame($entity->description, $entityInDb->description);
-        $this->assertSame($entity->yearLaunched, $entityInDb->yearLaunched);
-        $this->assertSame($entity->rating, $entityInDb->rating);
-        $this->assertSame($entity->duration, $entityInDb->duration);
-        $this->assertSame($entity->opened, $entityInDb->opened);
+        $this->assertInstanceOf(VideoEntity::class, $entityUpdated);
+        $this->assertSame($entity->title, $entityUpdated->title);
+        $this->assertSame($entity->description, $entityUpdated->description);
+        $this->assertSame($entity->yearLaunched, $entityUpdated->yearLaunched);
+        $this->assertSame($entity->rating, $entityUpdated->rating);
+        $this->assertSame($entity->duration, $entityUpdated->duration);
+        $this->assertSame($entity->opened, $entityUpdated->opened);
 
         $this->assertDatabaseHas('videos', [
             'id' => $entity->id(),
@@ -266,9 +266,9 @@ class VideoEloquentRepositoryTest extends TestCase
             'opened' => $entity->opened,
         ]);
 
-        $this->assertEquals($categories->pluck('id')->toArray(), $entityInDb->categoriesId);
-        $this->assertEquals($genres->pluck('id')->toArray(), $entityInDb->genresId);
-        $this->assertEquals($castMembers->pluck('id')->toArray(), $entityInDb->castMembersId);
+        $this->assertEquals($categories->pluck('id')->toArray(), $entityUpdated->categoriesId);
+        $this->assertEquals($genres->pluck('id')->toArray(), $entityUpdated->genresId);
+        $this->assertEquals($castMembers->pluck('id')->toArray(), $entityUpdated->castMembersId);
     }
 
     public function test_delete_not_found(): void

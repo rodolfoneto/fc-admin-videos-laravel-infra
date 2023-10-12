@@ -2,16 +2,20 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Enums\ImageTypes;
+use App\Enums\MediaTypes;
 use Core\Domain\Entity\Entity;
 use Core\Domain\Entity\Video;
 use App\Models\Video as VideoModel;
 use App\Repositories\Presenters\PaginationPresenter;
+use Core\Domain\Enum\MediaStatus;
 use Core\Domain\Enum\Rating;
 use Core\Domain\Exception\NotFoundException;
 use Core\Domain\Repository\{
     VideoRepositoryInterface,
     PaginationInterface
 };
+use Core\Domain\ValueObject\Media;
 use Core\Domain\ValueObject\Uuid;
 use Illuminate\Database\Eloquent\Model;
 
@@ -110,11 +114,26 @@ class VideoEloquentRepository implements VideoRepositoryInterface
             throw new NotFoundException('Video not found', 404);
         }
 
-        $entityDb->trailer()->updateOrCreate([
-            'file_path' => $entity->trailerFile()->path(),
-            'encoded_path' => $entity->trailerFile()->encodedPath(),
-            'media_status' => $entity->trailerFile()->mediaStatus()->value,
-        ]);
+        if ($trailer = $entity->trailerFile()) {
+            $action = $entityDb->trailer()->first() ? 'update' : 'create';
+
+            $entityDb->trailer()->{$action}([
+                'file_path'    => $trailer->path(),
+                'media_status' => $trailer->mediaStatus()->value,
+                'encoded_path' => $trailer->encodedPath(),
+                'type'         => MediaTypes::TRAILER->value,
+            ]);
+        }
+
+        if($banner = $entity->bannerFile()) {
+            $action = $entityDb->banner()->first() ? 'update' : 'create';
+            $entityDb->banner()->{$action}([
+                'file_path' => $banner->path(),
+                'type'      => ImageTypes::BANNER->value,
+            ]);
+        }
+
+        return $this->convertObjectToEntity($entityDb);
     }
 
     protected function syncRelationships(VideoModel $model, Entity $entity)
@@ -146,6 +165,14 @@ class VideoEloquentRepository implements VideoRepositoryInterface
         }
         foreach ($object->castMembers as $item) {
             $entity->addCastMemberId($item->id);
+        }
+        
+        if ($trailerFile = $object->trailer) {
+            $entity->setTrailerFile(new Media(
+                path: $trailerFile->file_path,
+                mediaStatus: MediaStatus::from($trailerFile->media_status),
+                encodedPath: $trailerFile->encoded_path,
+            ));
         }
 
         return $entity;

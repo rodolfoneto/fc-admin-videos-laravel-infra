@@ -12,7 +12,7 @@ trait UuidTrait
      */
     protected static function booted()
     {
-        static::created(function ($model) {
+        static::creating(function ($model) {
             $model->id = Str::uuid();
         });
     }

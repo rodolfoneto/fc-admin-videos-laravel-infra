@@ -2,18 +2,25 @@
 
 namespace Tests\Feature\App\Repositories;
 
+use App\Enums\ImageTypes;
 use App\Models\{
     CastMember,
     Category,
     Genre,
+    Media,
     Video as Model,
 };
 use App\Repositories\Eloquent\VideoEloquentRepository;
 use Core\Domain\Entity\Video as VideoEntity;
+use Core\Domain\Enum\MediaStatus;
 use Core\Domain\Enum\Rating;
 use Core\Domain\Exception\NotFoundException;
 use Core\Domain\Repository\VideoRepositoryInterface;
-use Core\Domain\ValueObject\Uuid;
+use Core\Domain\ValueObject\{
+    Media as ValueObjectMedia,
+    Image as ValueObjectImage,
+    Uuid,
+};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -289,5 +296,118 @@ class VideoEloquentRepositoryTest extends TestCase
         $this->assertSoftDeleted('videos', [
             'id' => $entityDb->id,
         ]);
+    }
+
+    public function test_insert_with_media_trailer(): void
+    {
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+            trailerFile: new ValueObjectMedia(
+                path: 'test.mp4',
+                mediaStatus: MediaStatus::PROCESSING
+            ),
+        );
+
+        $this->repository->insert($entity);
+        $this->assertDatabaseCount('medias_video', 0);
+        $this->repository->updateMedia($entity);
+        
+        $this->assertDatabaseHas('medias_video', [
+            'video_id'     => $entity->id(),
+            'file_path'    => 'test.mp4',
+            'media_status' => MediaStatus::PROCESSING->value,
+        ]);
+        $this->assertDatabaseCount('medias_video', 1);
+    }
+
+    public function test_set_media_trailer_method(): void
+    {
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+            trailerFile: new ValueObjectMedia(
+                path: 'test.mp4',
+                mediaStatus: MediaStatus::PROCESSING
+            ),
+        );
+
+        $this->repository->insert($entity);
+        $this->assertDatabaseCount('medias_video', 0);
+        $this->repository->updateMedia($entity);
+        
+        $entity->setTrailerFile(new ValueObjectMedia(
+            path: 'test2.mp4',
+            mediaStatus: MediaStatus::PENDING,
+            encodedPath: 'h43g45f3g45f.mp4',
+        ));
+
+        $entityUpdated = $this->repository->updateMedia($entity);
+
+        $this->assertDatabaseHas('medias_video', [
+            'video_id'     => $entity->id(),
+            'file_path'    => 'test2.mp4',
+            'media_status' => MediaStatus::PENDING->value,
+            'encoded_path' => 'h43g45f3g45f.mp4'
+        ]);
+        $this->assertDatabaseCount('medias_video', 1);
+
+        $this->assertNotNull($entityUpdated->trailerFile());
+        $this->assertInstanceOf(ValueObjectMedia::class, $entityUpdated->trailerFile());
+        $this->assertEquals($entityUpdated->trailerFile()->encodedPath(), 'h43g45f3g45f.mp4');
+        $this->assertEquals($entityUpdated->trailerFile()->mediaStatus(), MediaStatus::PENDING);
+        $this->assertEquals($entityUpdated->trailerFile()->path(), 'test2.mp4');
+    }
+
+    public function test_insert_with_image_banner()
+    {
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+            bannerFile: new ValueObjectImage(
+                path: 'test.jpg',
+            ),
+        );
+    }
+
+    public function test_insert_with_banner()
+    {
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+            bannerFile: new ValueObjectImage(
+                path: 'test.jpg',
+            ),
+        );
+
+        $this->repository->insert($entity);
+
+        $this->assertDatabaseCount('medias_video', 0);
+
+        $this->repository->updateMedia($entity);
+
+        $this->assertDatabaseHas('medias_video', [
+            'video_id'  => $entity->id(),
+            'file_path' => $entity->bannerFile()->path(),
+            'type'      => ImageTypes::BANNER->value,
+        ]);
+
+        $this->assertDatabaseCount('medias_video', 1);
     }
 }

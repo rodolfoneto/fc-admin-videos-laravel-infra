@@ -11,6 +11,9 @@ use PHPUnit\Framework\TestCase;
 class ListCategoriesUseCaseUnitTest extends TestCase
 {
 
+    private $mockRepo;
+    private $mockInputDto;
+
     public function testListCategoryEmpty()
     {
         $mockPagination = $this->mockPagination();

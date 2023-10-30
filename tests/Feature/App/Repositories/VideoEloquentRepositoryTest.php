@@ -3,6 +3,7 @@
 namespace Tests\Feature\App\Repositories;
 
 use App\Enums\ImageTypes;
+use App\Enums\MediaTypes;
 use App\Models\{
     CastMember,
     Category,
@@ -380,9 +381,23 @@ class VideoEloquentRepositoryTest extends TestCase
                 path: 'test.jpg',
             ),
         );
+
+        $this->repository->insert($entity);
+
+        $this->assertDatabaseCount('images_video', 0);
+
+        $this->repository->updateMedia($entity);
+
+        $this->assertDatabaseHas('images_video', [
+            'video_id'  => $entity->id(),
+            'file_path' => $entity->bannerFile()->path(),
+            'type'      => ImageTypes::BANNER->value,
+        ]);
+
+        $this->assertDatabaseCount('images_video', 1);
     }
 
-    public function test_insert_with_banner()
+    public function test_update_with_image_banner()
     {
         $entity = new VideoEntity(
             title: 'AAAAAAAAAA Title To Search',
@@ -391,8 +406,40 @@ class VideoEloquentRepositoryTest extends TestCase
             rating: Rating::L,
             duration: 100,
             opened: true,
-            bannerFile: new ValueObjectImage(
-                path: 'test.jpg',
+        );
+
+        $this->repository->insert($entity);
+
+        $entity->setBannerFile(new ValueObjectImage(
+            path: 'test2.jpg',
+        ));
+        
+        $entity = $this->repository->updateMedia($entity);
+        
+        $this->assertDatabaseHas('images_video', [
+            'video_id'  => $entity->id(),
+            'file_path' => 'test2.jpg',
+            'type'      => ImageTypes::BANNER->value,
+        ]);
+
+        $this->assertDatabaseCount('images_video', 1);
+
+        $this->assertNotNull($entity->bannerFile());
+    }
+
+    public function test_insert_with_media_video()
+    {
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+            videoFile: new ValueObjectMedia(
+                path: 'test.mp4',
+                mediaStatus: MediaStatus::PROCESSING,
+                encodedPath: 'teste.mp4'
             ),
         );
 
@@ -400,14 +447,56 @@ class VideoEloquentRepositoryTest extends TestCase
 
         $this->assertDatabaseCount('medias_video', 0);
 
-        $this->repository->updateMedia($entity);
+        $entity = $this->repository->updateMedia($entity);
 
         $this->assertDatabaseHas('medias_video', [
-            'video_id'  => $entity->id(),
-            'file_path' => $entity->bannerFile()->path(),
-            'type'      => ImageTypes::BANNER->value,
+            'video_id'     => $entity->id(),
+            'file_path'    => $entity->videoFile()->path(),
+            'type'         => MediaTypes::VIDEO->value,
+            'encoded_path' => $entity->videoFile()->encodedPath(),
+            'media_status' => MediaStatus::PROCESSING->value,
         ]);
 
         $this->assertDatabaseCount('medias_video', 1);
+        $this->assertNotNull($entity->videoFile());
+    }
+
+    public function test_update_with_media_video()
+    {
+        $entity = new VideoEntity(
+            title: 'AAAAAAAAAA Title To Search',
+            description: 'AAAAAAAAAA Description To Search',
+            yearLaunched: 2026,
+            rating: Rating::L,
+            duration: 100,
+            opened: true,
+            videoFile: new ValueObjectMedia(
+                path: 'test.mp4',
+                mediaStatus: MediaStatus::PROCESSING,
+                encodedPath: 'teste.mp4'
+            ),
+        );
+
+        $this->repository->insert($entity);
+        $entity = $this->repository->updateMedia($entity);
+
+        $entity->setVideoFile(new ValueObjectMedia(
+            path: 'test3.mp4',
+            mediaStatus: MediaStatus::COMPLETE,
+            encodedPath: 'teste3.xpto',
+        ));
+
+        $entity = $this->repository->updateMedia($entity);
+
+        $this->assertDatabaseHas('medias_video', [
+            'video_id'     => $entity->id(),
+            'file_path'    => 'test3.mp4',
+            'type'         => MediaTypes::VIDEO->value,
+            'encoded_path' => 'teste3.xpto',
+            'media_status' => MediaStatus::COMPLETE->value,
+        ]);
+
+        $this->assertDatabaseCount('medias_video', 1);
+        $this->assertNotNull($entity->videoFile());
     }
 }

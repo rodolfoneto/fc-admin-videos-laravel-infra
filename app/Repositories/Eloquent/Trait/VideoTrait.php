@@ -48,4 +48,26 @@ trait VideoTrait
             ]);
         }
     }
+
+    public function updateImageThumb(Video $entity, ModelsVideo $entityDb): void
+    {
+        if($thumb = $entity->thumbFile()) {
+            $action = $entityDb->thumb()->first() ? 'update' : 'create';
+            $entityDb->thumb()->{$action}([
+                'file_path' => $thumb->path(),
+                'type'      => ImageTypes::THUMB->value,
+            ]);
+        }
+    }
+
+    public function updateImageThumbHalf(Video $entity, ModelsVideo $entityDb): void
+    {
+        if($thumbHalf = $entity->thumbHalfFile()) {
+            $action = $entityDb->thumbHalf()->first() ? 'update' : 'create';
+            $entityDb->thumbHalf()->{$action}([
+                'file_path' => $thumbHalf->path(),
+                'type'      => ImageTypes::THUMB_HALF->value,
+            ]);
+        }
+    }
 }

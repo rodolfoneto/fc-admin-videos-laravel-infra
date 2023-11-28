@@ -9,6 +9,7 @@ use Core\Domain\Entity\Video;
 use App\Models\Video as VideoModel;
 use App\Repositories\Eloquent\Trait\VideoTrait;
 use App\Repositories\Presenters\PaginationPresenter;
+use Core\Domain\Builder\Video\UpdateVideoBuilder;
 use Core\Domain\Enum\MediaStatus;
 use Core\Domain\Enum\Rating;
 use Core\Domain\Exception\NotFoundException;
@@ -122,6 +123,8 @@ class VideoEloquentRepository implements VideoRepositoryInterface
         $this->updateMediaVideo($entity, $entityDb);
         $this->updateMediaTrailer($entity, $entityDb);
         $this->updateImageBanner($entity, $entityDb);
+        $this->updateImageThumb($entity, $entityDb);
+        $this->updateImageThumbHalf($entity, $entityDb);
         
         return $this->convertObjectToEntity($entityDb);
     }
@@ -150,41 +153,50 @@ class VideoEloquentRepository implements VideoRepositoryInterface
         foreach ($model->categories as $item) {
             $entity->addCategoryId($item->id);
         }
+
         foreach ($model->genres as $item) {
             $entity->addGenreId($item->id);
         }
+
         foreach ($model->castMembers as $item) {
             $entity->addCastMemberId($item->id);
         }
+
+        $builder = (new UpdateVideoBuilder)
+                        ->setEntity($entity);
         
-        if ($banner = $model->banner) {
-            $entity->setBannerFile(new ValueObjectImage(
-                path: $banner->file_path,
-            ));
-        }
-
-        if ($mediaFile = $model->media) {
-            $entity->setVideoFile(new ValueObjectMedia(
-                path: $mediaFile->file_path,
-                mediaStatus: MediaStatus::from($mediaFile->media_status),
-                encodedPath: $mediaFile->encoded_path,
-            ));
-        }
-
         if ($trailerFile = $model->trailer) {
-            $entity->setTrailerFile(new ValueObjectMedia(
+            $builder->addTrailer(
                 path: $trailerFile->file_path,
                 mediaStatus: MediaStatus::from($trailerFile->media_status),
                 encodedPath: $trailerFile->encoded_path,
-            ));
+            );
+        }
+
+        if ($mediaFile = $model->media) {
+            $builder->addMediaVideo(
+                path: $mediaFile->file_path,
+                mediaStatus: MediaStatus::from($mediaFile->media_status),
+                encodedPath: $mediaFile->encoded_path,
+            );
+        }
+
+        if ($banner = $model->banner) {
+            $builder->addBanner($banner->file_path);
+        }
+
+        if ($thumb = $model->thumb) {
+            $builder->addThumb($thumb->file_path);
+        }
+
+        if ($thumbHalf = $model->thumbHalf) {
+            $builder->addThumbHalf($thumbHalf->file_path);
         }
 
         if($banner = $model->banner) {
-            $entity->setBannerFile(new ValueObjectImage(
-                path: $banner->file_path,
-            ));
+            $builder->addBanner($banner->file_path);
         }
 
-        return $entity;
+        return $builder->getEntity();
     }
 }

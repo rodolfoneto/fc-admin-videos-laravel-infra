@@ -22,3 +22,4 @@ yarn-error.log
 .composer
 psysh_history
 sail
+storage/cloud

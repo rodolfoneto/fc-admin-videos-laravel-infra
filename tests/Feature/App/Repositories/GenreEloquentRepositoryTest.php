@@ -16,6 +16,13 @@ class GenreEloquentRepositoryTest extends TestCase
 {
     protected GenreRepositoryInterface $repository;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $model = new ModelGenre();
+        $this->repository = new GenreEloquentRepository($model);
+    }
+
     public function test_create_genre()
     {
         $genre = new EntityGenre(name: "Test");
@@ -184,13 +191,5 @@ class GenreEloquentRepositoryTest extends TestCase
         $result = $this->repository->delete($genre->id);
         $this->assertSoftDeleted($genre);
         $this->assertTrue($result);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $model = new ModelGenre();
-        $transaction = new DbTransaction();
-        $this->repository = new GenreEloquentRepository($model, $transaction);
     }
 }

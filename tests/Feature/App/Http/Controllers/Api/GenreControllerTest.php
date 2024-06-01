@@ -33,7 +33,6 @@ class GenreControllerTest extends TestCase
     {
         parent::setUp();
         $this->controller = new GenreController();
-        $this->transaction = new DbTransaction();
-        $this->repository = new GenreEloquentRepository(new GenreModel(), $this->transaction);
+        $this->repository = new GenreEloquentRepository(new GenreModel());
     }
 }

@@ -7,7 +7,7 @@ use Core\UseCase\DTO\Genre\GenresListInputDto;
 use Core\UseCase\DTO\Genre\GenresListOutputDto;
 use Core\UseCase\Genre\ListGenresUseCase;
 
-class ListGenresUseCaseTest extends BaseGenreUseCaseRepository
+class ListGenresUseCaseTest extends BaseNoTransactionGenreUseCaseRepository
 {
     public function test_get_all()
     {

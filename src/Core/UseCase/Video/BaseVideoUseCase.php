@@ -12,7 +12,10 @@ use Core\Domain\Repository\{CastMemberRepositoryInterface,
     EntityRepositoryInterface,
     GenreRepositoryInterface,
     VideoRepositoryInterface};
-use Core\UseCase\Interface\{FileStorageInterface, TransactionInterface,};
+use Core\UseCase\Interface\{
+    FileStorageInterface,
+    TransactionInterface
+};
 use Core\UseCase\Video\Interfaces\VideoEventManagerInterface;
 
 abstract class BaseVideoUseCase

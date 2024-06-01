@@ -9,7 +9,7 @@ use Core\Domain\Repository\GenreRepositoryInterface;
 use Core\UseCase\Interface\TransactionInterface;
 use Tests\TestCase;
 
-class BaseGenreUseCaseRepository extends TestCase
+class BaseNoTransactionGenreUseCaseRepository extends TestCase
 {
     protected GenreRepositoryInterface $repository;
     protected TransactionInterface $transaction;
@@ -18,17 +18,11 @@ class BaseGenreUseCaseRepository extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->transaction = new DbTransaction();
         $this->model = new GenreModel();
 
 
         $this->repository = new GenreEloquentRepository(
             model: $this->model
         );
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
     }
 }

@@ -14,7 +14,7 @@ use Core\UseCase\DTO\Genre\{
     GenreDeleteOutputDto,
 };
 
-class DeleteGenreUseCaseTest extends BaseGenreUseCaseRepository
+class DeleteGenreUseCaseTest extends BaseNoTransactionGenreUseCaseRepository
 {
 
     public function test_delete()

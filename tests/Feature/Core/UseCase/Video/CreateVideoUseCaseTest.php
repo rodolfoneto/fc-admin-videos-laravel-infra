@@ -26,11 +26,22 @@ use Core\UseCase\Video\Create\Dto\CreateVideoInputDto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class CreateVideoUseCaseTest extends TestCase
 {
     use RefreshDatabase;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if (DB::transactionLevel() > 0) {
+            DB::commit();
+        }
+    }
 
     #[DataProvider('dataProviderBelongsTo')]
     public function test_storage(
@@ -97,11 +108,7 @@ class CreateVideoUseCaseTest extends TestCase
     public static function dataProviderBelongsTo(): array
     {
         return [
-            [
-                    'categories' => 3,
-                    'genres' => 3,
-                    'castMembers' => 3,
-            ],
+            [3, 3, 3],
         ];
     }
 }

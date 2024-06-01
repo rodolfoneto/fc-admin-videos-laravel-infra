@@ -8,7 +8,6 @@ use Core\Domain\Entity\Entity;
 use Core\Domain\Exception\NotFoundException;
 use Core\Domain\Entity\Genre;
 use Core\Domain\ValueObject\Uuid;
-use Core\UseCase\Interface\TransactionInterface;
 use Core\Domain\Repository\{
     GenreRepositoryInterface,
     PaginationInterface,
@@ -18,12 +17,10 @@ class GenreEloquentRepository implements GenreRepositoryInterface
 {
 
     protected GenreModel $model;
-    protected TransactionInterface $transaction;
 
-    public function __construct(GenreModel $model, TransactionInterface $transaction)
+    public function __construct(GenreModel $model)
     {
         $this->model = $model;
-        $this->transaction = $transaction;
     }
 
     public function insert(Entity $entity): Genre

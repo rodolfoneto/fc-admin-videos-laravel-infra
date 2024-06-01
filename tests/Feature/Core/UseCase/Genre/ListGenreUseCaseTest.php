@@ -9,7 +9,7 @@ use Core\UseCase\DTO\Genre\GenreOutputDto;
 use Core\UseCase\Genre\ListGenreUseCase;
 use Ramsey\Uuid\Uuid;
 
-class ListGenreUseCaseTest extends BaseGenreUseCaseRepository
+class ListGenreUseCaseTest extends BaseNoTransactionGenreUseCaseRepository
 {
     public function test_get_genre()
     {

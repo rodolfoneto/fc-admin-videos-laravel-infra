@@ -198,7 +198,7 @@ class VideoEloquentRepositoryTest extends TestCase
         $this->assertEquals($lastPage, $response->lastPage());
     }
 
-    public function dataProviderPagination(): array
+    public static function dataProviderPagination(): array
     {
         return [
             [50, 1, 10, 10, 5],

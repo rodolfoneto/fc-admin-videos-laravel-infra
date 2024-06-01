@@ -32,8 +32,7 @@ class CreateVideoUseCaseTest extends TestCase
 {
     use RefreshDatabase;
 
-
-    #[DataProvider('dataProvider')]
+    #[DataProvider('dataProviderBelongsTo')]
     public function test_storage(
         $qtyCategories,
         $qtyGenres,
@@ -84,6 +83,7 @@ class CreateVideoUseCaseTest extends TestCase
         $this->assertEquals($inputDTO->opened, $response->opened);
 
         $this->assertEquals($inputDTO->categories, $response->categories);
+        $this->assertEqualsCanonicalizing($inputDTO->categories, $response->categories);
         $this->assertEquals($inputDTO->genres, $response->genres);
         $this->assertEquals($inputDTO->castMembers, $response->castMembers);
 
@@ -94,16 +94,14 @@ class CreateVideoUseCaseTest extends TestCase
         $this->assertNull($response->thumbHalfFile);
     }
 
-    public static function dataProvider()
+    public static function dataProviderBelongsTo(): array
     {
         return [
-            'test_categories_and_genrer_and_castmenbers' => [
-                [
+            [
                     'categories' => 3,
                     'genres' => 3,
                     'castMembers' => 3,
-                ],
-            ]
+            ],
         ];
     }
 }

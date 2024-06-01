@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 use DateTime;
 
-abstract class BaseVideoUseCaseUnitTest extends TestCase
+abstract class BaseVideoUseCaseTestBase extends TestCase
 {
     protected BaseVideoUseCase $useCase;
 
@@ -99,7 +99,7 @@ abstract class BaseVideoUseCaseUnitTest extends TestCase
         );
     }
 
-    public function dataProviderIds(): array
+    public static function dataProviderIds(): array
     {
         return [
             ['Category', ['uuid-1'], [], []],
@@ -145,7 +145,7 @@ abstract class BaseVideoUseCaseUnitTest extends TestCase
         $this->assertEquals($videoFile['expect'], $output->videoFile);
     }
 
-    public function dataProviderFiles(): array
+    public static function dataProviderFiles(): array
     {
         return [
             [

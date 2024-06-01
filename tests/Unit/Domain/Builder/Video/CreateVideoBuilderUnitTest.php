@@ -13,6 +13,10 @@ use PHPUnit\Framework\TestCase;
 
 class CreateVideoBuilderUnitTest extends TestCase
 {
+    protected $inputDto;
+    protected $video;
+    protected $builder;
+    
     public function test_verify_interface_implementation()
     {
         $builder = new CreateVideoBuilder();

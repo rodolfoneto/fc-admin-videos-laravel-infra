@@ -1,12 +1,16 @@
 <?php
 
+namespace Tests\Unit\UseCase\Category;
+
 use Core\Domain\Entity\Category;
 use Core\Domain\Repository\CategoryRepositoryInterface;
 use Core\Domain\Repository\PaginationInterface;
 use Core\UseCase\Category\ListCategoriesUseCase;
 use Core\UseCase\DTO\Category\CategoriesListInputDto;
 use Core\UseCase\DTO\Category\CategoriesListOutputDto;
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class ListCategoriesUseCaseUnitTest extends TestCase
 {

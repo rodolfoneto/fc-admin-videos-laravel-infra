@@ -10,7 +10,7 @@ use Core\UseCase\Video\Update\Dto\{
 use Core\UseCase\Video\Update\UseCase;
 use Mockery;
 
-class UpdateVideoUseCaseUnitTest extends BaseVideoUseCaseUnitTest
+class UpdateVideoUseCaseUnitTest extends BaseVideoUseCaseTestBase
 {
     public function test_execute_input_output()
     {

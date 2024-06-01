@@ -10,7 +10,7 @@ use Core\UseCase\Video\Create\Dto\{
 use Core\UseCase\Video\Create\CreateVideoUseCase;
 use Mockery;
 
-class CreateVideoUseCaseUnitTest extends BaseVideoUseCaseUnitTest
+class CreateVideoUseCaseUnitTest extends BaseVideoUseCaseTestBase
 {
     public function test_execute_input_output()
     {

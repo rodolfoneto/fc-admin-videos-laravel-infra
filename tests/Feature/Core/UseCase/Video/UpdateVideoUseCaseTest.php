@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Core\UseCase\Video;
 
-use Core\Domain\Enum\Rating;
-use Core\UseCase\Video\Create\CreateVideoUseCase;
-use Core\UseCase\Video\Create\Dto\CreateVideoInputDto;
+use App\Models\Video;
+use Core\UseCase\Video\Update\Dto\InputDto as UpdateVideoInputDto;
+use Core\UseCase\Video\Update\UseCase as UpdateVideoUseCase;
 
-class CreateVideoUseCaseTest extends BaseVideoUseCase
+class UpdateVideoUseCaseTest extends BaseVideoUseCase
 {
     protected function getUseCaseClass(): string
     {
-        return CreateVideoUseCase::class;
+        return UpdateVideoUseCase::class;
     }
 
     protected function getInputDTO(
@@ -22,15 +22,12 @@ class CreateVideoUseCaseTest extends BaseVideoUseCase
         ?array $bannerFile    = null,
         ?array $thumbFile     = null,
         ?array $thumbHalfFile = null,
-    ): object
-    {
-        $inputDTO = new CreateVideoInputDto(
+    ): object {
+        $videoDb = Video::factory()->create();
+        $inputDTO = new UpdateVideoInputDto(
+            id:           $videoDb->id,
             title:        'Test',
             description:  'Descrição de Test',
-            yearLaunched:  2022,
-            rating:        Rating::RATE12,
-            duration:      10,
-            opened:        true,
             categories:    $categories,
             genres:        $genres,
             castMembers:   $castMembers,

@@ -24,6 +24,7 @@ class UseCase extends BaseVideoUseCase
             description: $input->description,
         );
         $this->builderVideo->setEntity($entity);
+        $this->builderVideo->addIds($input);
         try {
             $this->repository->update(entity: $this->builderVideo->getEntity());
             $this->storageFiles(input: $input);
